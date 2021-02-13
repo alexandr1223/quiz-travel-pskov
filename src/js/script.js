@@ -4,10 +4,32 @@ window.addEventListener('DOMContentLoaded', () => {
         $("#tel").mask("+7(999) 999-9999");
     });
 
+    $('img.img-svg').each(function(){
+        var $img = $(this);
+        var imgClass = $img.attr('class');
+        var imgURL = $img.attr('src');
+        $.get(imgURL, function(data) {
+            var $svg = $(data).find('svg');
+            if(typeof imgClass !== 'undefined') {
+            $svg = $svg.attr('class', imgClass+' replaced-svg');
+            }
+            $svg = $svg.removeAttr('xmlns:a');
+            if(!$svg.attr('viewBox') && $svg.attr('height') && $svg.attr('width')) {
+            $svg.attr('viewBox', '0 0 ' + $svg.attr('height') + ' ' + $svg.attr('width'))
+            }
+            $img.replaceWith($svg);
+        }, 'xml');
+    });
+
     function firstScreenHide() {
         document.querySelector('.content-left__first-btn').addEventListener('click', function() {
-            document.querySelector('.content__hi').style.display = "none"
-            document.querySelector('.content__all').style.display = "block"
+            document.querySelector('.content__hi').style.cssText = "left: -100%; opacity: 0; visibility: hidden"
+            function quizShow(){
+                let block = document.querySelector('.content__all')
+                block.style.cssText = "right: 50%; opacity: 1; visibility: visible"
+                // setTimeout(block.style.cssText = "opacity: 1", 500)
+            }
+            setTimeout(quizShow(), 1000)
         })
     }
     firstScreenHide();
@@ -17,22 +39,23 @@ window.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('.content-quiz__block').forEach(item => {
             console.log(item)
             item.addEventListener('click', event => {
-                if (event.target.classList.contains('content-quiz__item')) {
+                console.log(event.target)
+                if (event.target.parentNode.classList.contains('content-quiz__item')) {
                     if (selected) {
                         selected.classList.remove('check')
                     }
                     
-                    selected = event.target;
+                    selected = event.target.parentNode;
                     
                     selected.classList.add('check');
                 }
-                if (event.target.classList.contains('content-quiz__item--first')) { // Если клик был на элемент первого блока вопросов
+                if (event.target.parentNode.classList.contains('content-quiz__item--first')) { // Если клик был на элемент первого блока вопросов
                     document.querySelector('.content-quiz__next').classList.add('nextActive'); // Делаем кнопку Далее активной
-                } else if (event.target.classList.contains('content-quiz__item--second')) {  
+                } else if (event.target.parentNode.classList.contains('content-quiz__item--second')) {  
                     document.querySelector('.content-quiz__next').classList.add('nextActive');
-                } else if (event.target.classList.contains('content-quiz__item--third')) { 
+                } else if (event.target.parentNode.classList.contains('content-quiz__item--third')) { 
                     document.querySelector('.content-quiz__next').classList.add('nextActive');
-                } else if (event.target.classList.contains('content-quiz__item--fourth')) { 
+                } else if (event.target.parentNode.classList.contains('content-quiz__item--fourth')) { 
                     document.querySelector('.content-quiz__next').classList.add('nextActive');
                 }
             }, false)
