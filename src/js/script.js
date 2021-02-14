@@ -21,20 +21,19 @@ window.addEventListener('DOMContentLoaded', () => {
         }, 'xml');
     });
 
-    function firstScreenHide() {
+    function firstScreenHide() {  // Скрытие приветственного окна и открытие окна с вопросами
         document.querySelector('.content-left__first-btn').addEventListener('click', function() {
             document.querySelector('.content__hi').style.cssText = "left: -100%; opacity: 0; visibility: hidden"
             function quizShow(){
                 let block = document.querySelector('.content__all')
                 block.style.cssText = "right: 50%; opacity: 1; visibility: visible"
-                // setTimeout(block.style.cssText = "opacity: 1", 500)
             }
             setTimeout(quizShow(), 1000)
         })
     }
     firstScreenHide();
 
-    function optionClick() {
+    function optionClick() { // Выбор варианта ответа
         let selected = null;
         document.querySelectorAll('.content-quiz__block').forEach(item => {
             console.log(item)
@@ -44,20 +43,22 @@ window.addEventListener('DOMContentLoaded', () => {
                     if (selected) {
                         selected.classList.remove('check')
                     }
-                    
                     selected = event.target.parentNode;
-                    
+                    selected.classList.add('check');
+                } else if (event.target.classList.contains('content-quiz__item')) {
+                    if (selected) {
+                        selected.classList.remove('check')
+                    }
+                    selected = event.target;
                     selected.classList.add('check');
                 }
-                if (event.target.parentNode.classList.contains('content-quiz__item--first')) { // Если клик был на элемент первого блока вопросов
-                    document.querySelector('.content-quiz__next').classList.add('nextActive'); // Делаем кнопку Далее активной
-                } else if (event.target.parentNode.classList.contains('content-quiz__item--second')) {  
-                    document.querySelector('.content-quiz__next').classList.add('nextActive');
-                } else if (event.target.parentNode.classList.contains('content-quiz__item--third')) { 
-                    document.querySelector('.content-quiz__next').classList.add('nextActive');
-                } else if (event.target.parentNode.classList.contains('content-quiz__item--fourth')) { 
-                    document.querySelector('.content-quiz__next').classList.add('nextActive');
-                }
+                document.querySelectorAll('.content-quiz__block').forEach(() => {
+                    document.querySelectorAll('.content-quiz__item').forEach(item => {
+                        if (item.classList.contains('check')) {
+                            document.querySelector('.content-quiz__next').classList.add('nextActive');
+                        }
+                    });
+                });
             }, false)
         })
     }
@@ -67,6 +68,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 function nextBlock() {
     let counter = 0,
+        percentNum = 25, // Установка количества процентов за один ответ
         percent = 0,
         titles = {
             first: 'Как часто вы работаете с оборудованием, которое создает вибрацию?',
@@ -117,19 +119,20 @@ function nextBlock() {
                 titleBlock.textContent = '';
         }
     }
-
     
 
     function slideToNextBlock() {
         document.querySelector(".content-quiz__next").addEventListener('click', function() {
             console.log(this)
+            document.querySelectorAll('.content-quiz__item').forEach(item => {
+                item.classList.remove('check');
+            })
             if (this.classList.contains("nextActive")) {
             
                 counter = counter + 1;
-                percent = percent + 25;
+                percent = percent + percentNum;
                 setTitle();
                 
-    
                 // Функция скрытия блока с вариантами выбора
                 function hide(block) {
                     document.querySelector(block).classList.add("blockHide");
@@ -138,7 +141,7 @@ function nextBlock() {
                     }
                     setTimeout(hideNew, 250)
                 }
-    
+            
                 // Функция показа следующего блока с вариантами выбора
                 function show(block) {
                     function showNew() {
@@ -150,35 +153,39 @@ function nextBlock() {
                     }
                     setTimeout(showNew, 250)
                 }
-                if (counter == 1) {
-                    hide(".content-quiz__first");
-                    setTimeout(hide(".content-quiz__first"), 0);
-                    show(".content-quiz__second");
-                    document.querySelector(".content-quiz__prev").classList.add('prevActive')
-                } else if (counter == 2) {
-                    hide(".content-quiz__second");
-                    setTimeout(hide(".content-quiz__second"), 0);
-                    show(".content-quiz__third");
-                } else if (counter == 3) {
-                    hide(".content-quiz__third");
-                    setTimeout(hide(".content-quiz__third"), 0);
-                    show(".content-quiz__fourth");
-                } else if (counter == 4) {
-                    hide(".content-quiz__fourth");
-                    setTimeout(hide(".content-quiz__fourth"), 0);
-                    function nShow() {
-                    
-                        function showNew() {
-                            document.querySelector(".form-send").classList.add("dBlock");
-                            function s() {
-                                document.querySelector(".form-send").classList.add("blockShow")
+
+                switch(counter){
+                    case 1: 
+                        hide(".content-quiz__first");
+                        show(".content-quiz__second");
+                        document.querySelector(".content-quiz__prev").classList.add('prevActive');
+                        break;
+                    case 2:
+                        hide(".content-quiz__second");
+                        show(".content-quiz__third");
+                        break;
+                    case 3:
+                        hide(".content-quiz__third");
+                        show(".content-quiz__fourth");
+                        break;
+                    case 4:
+                        hide(".content-quiz__fourth");
+                        function nShow() {
+                        
+                            function showNew() {
+                                document.querySelector(".form-send").classList.add("dBlock");
+                                function s() {
+                                    document.querySelector(".form-send").classList.add("blockShow")
+                                }
+                                setTimeout(s, 150)
                             }
-                            setTimeout(s, 150)
+                            setTimeout(showNew, 250)
                         }
-                        setTimeout(showNew, 250)
-                    }
-                    nShow();
-                    document.querySelector(".content-quiz__navigation").classList.add("dNoneHigh");
+                        nShow();
+                        document.querySelector(".content-quiz__navigation").classList.add("dNoneHigh");
+                        break;
+                    default:
+                        
                 }
     
                 document.querySelector(".content-quiz__next").classList.remove("nextActive");
@@ -193,9 +200,9 @@ function nextBlock() {
             if (this.classList.contains("prevActive")) {
             
                 counter = counter - 1;
-                percent = percent - 25;
+                percent = percent - percentNum;
                 setTitle();
-    
+                
                 function hide(blockHide) {
                     document.querySelector(blockHide).classList.add("blockShow");
                     function hideNew() {
@@ -214,57 +221,41 @@ function nextBlock() {
                     }
                     setTimeout(showNew, 250)
                 }
-                if (counter == 0) {
-                    hide(".content-quiz__second");
-                    setTimeout(hide(".content-quiz__second"), 0);
-                    show(".content-quiz__first");
-                    document.querySelector(".content-quiz__prev").classList.remove('prevActive')
-                } else if (counter == 1) {
-                    hide(".content-quiz__third");
-                    setTimeout(hide(".content-quiz__third"), 0);
-                    show(".content-quiz__second");
-                } else if (counter == 2) {
-                    hide(".content-quiz__fourth");
-                    setTimeout(hide(".content-quiz__fourth"), 0);
-                    show(".content-quiz__third");
-                } else if (counter == 4) {
-                    hide(".content-quiz__fourth");
-                    setTimeout(hide(".content-quiz__fourth"), 0);
-                    function nShow() {
-                    
-                        function showNew() {
-                            document.querySelector(".form-send").classList.add("dBlock");
-                            function s() {
-                                document.querySelector(".form-send").classList.add("blockShow")
+                switch(counter){
+                    case 0: 
+                        hide(".content-quiz__second");
+                        show(".content-quiz__first");
+                        document.querySelector(".content-quiz__prev").classList.remove('prevActive');
+                        break;
+                    case 1:
+                        hide(".content-quiz__third");
+                        show(".content-quiz__second");
+                        break;
+                    case 2:
+                        hide(".content-quiz__fourth");
+                        show(".content-quiz__third");
+                        break;
+                    case 3:
+                        hide(".content-quiz__fourth");
+                        function nShow() {
+                        
+                            function showNew() {
+                                document.querySelector(".form-send").classList.add("dBlock");
+                                function s() {
+                                    document.querySelector(".form-send").classList.add("blockShow")
+                                }
+                                setTimeout(s, 150)
                             }
-                            setTimeout(s, 150)
+                            setTimeout(showNew, 250)
                         }
-                        setTimeout(showNew, 250)
-                    }
-                    nShow();
-                    document.querySelector(".content-quiz__navigation").classList.add("dNone");
+                        nShow();
+                        document.querySelector(".content-quiz__navigation").classList.add("dNone");
+                    default:
+
                 }
     
                 document.querySelector(".content-quiz__next").classList.remove("nextActive");
             }
-    
-    
-            // function hide() {
-            //     document.querySelector(block).classList.add("blockHide");
-            //     function hideNew() {
-            //         document.querySelector(block).classList.add("dNone");
-            //     }
-            //     setTimeout(hideNew, 250)
-            // }
-            // setTimeout(hide, 0)
-            // function show() {
-            //     document.querySelector(nextBlock).classList.add("dBlock");
-            //     function showNew() {
-            //         document.querySelector(nextBlock).classList.add("blockShow");
-            //     }
-            //     setTimeout(showNew, 250)
-            // }
-            // setTimeout(show, 250)
         })
     }
     slideToPrevBlock();
