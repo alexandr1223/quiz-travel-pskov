@@ -26,12 +26,29 @@ window.addEventListener('DOMContentLoaded', () => {
             document.querySelector('.content__hi').style.cssText = "left: -100%; opacity: 0; visibility: hidden"
             function quizShow(){
                 let block = document.querySelector('.content__all')
-                block.style.cssText = "right: 50%; opacity: 1; visibility: visible"
+                block.style.cssText = "display: flex; right: 50%; opacity: 1; visibility: visible"
             }
             setTimeout(quizShow(), 1000)
         })
     }
     firstScreenHide();
+
+    // Открытие блока с бонусами на моб версии
+    function bonusShow() {
+        document.querySelector('.content-right').addEventListener('click', () => {
+            if (document.querySelector('.content-right').classList.contains('bonusShow')) {
+                document.querySelector('.content-right').classList.remove('bonusShow');
+                document.querySelector('.content-right__arrow').style.cssText = 'transform: rotate(90deg)';
+                document.querySelector('.content-right--bonus').style.cssText = 'display: none';   
+            } else {
+                document.querySelector('.content-right').classList.add('bonusShow');
+                document.querySelector('.content-right__arrow').style.cssText = 'transform: rotate(270deg)';
+                document.querySelector('.content-right--bonus').style.cssText = 'display: block';
+            }
+            
+        })
+    }
+    bonusShow();
 
     function optionClick() { // Выбор варианта ответа
         let selected = null;
