@@ -35,18 +35,20 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // Открытие блока с бонусами на моб версии
     function bonusShow() {
-        document.querySelector('.content-right').addEventListener('click', () => {
-            if (document.querySelector('.content-right').classList.contains('bonusShow')) {
-                document.querySelector('.content-right').classList.remove('bonusShow');
-                document.querySelector('.content-right__arrow').style.cssText = 'transform: rotate(90deg)';
-                document.querySelector('.content-right--bonus').style.cssText = 'display: none';   
-            } else {
-                document.querySelector('.content-right').classList.add('bonusShow');
-                document.querySelector('.content-right__arrow').style.cssText = 'transform: rotate(270deg)';
-                document.querySelector('.content-right--bonus').style.cssText = 'display: block';
-            }
-            
-        })
+        if (window.screen.width < 460) {
+            document.querySelector('.content-right').addEventListener('click', () => {
+                if (document.querySelector('.content-right').classList.contains('bonusShow')) {
+                    document.querySelector('.content-right').classList.remove('bonusShow');
+                    document.querySelector('.content-right__arrow').style.cssText = 'transform: rotate(90deg)';
+                    document.querySelector('.content-right--bonus').style.cssText = 'display: none';   
+                } else {
+                    document.querySelector('.content-right').classList.add('bonusShow');
+                    document.querySelector('.content-right__arrow').style.cssText = 'transform: rotate(270deg)';
+                    document.querySelector('.content-right--bonus').style.cssText = 'display: block';
+                }
+                
+            })
+        }
     }
     bonusShow();
 
@@ -85,13 +87,15 @@ window.addEventListener('DOMContentLoaded', () => {
 
 function nextBlock() {
     let counter = 0,
-        percentNum = 25, // Установка количества процентов за один ответ
+        percentNum = 16, // Установка количества процентов за один ответ
         percent = 0,
         titles = {
-            first: 'Как часто вы работаете с оборудованием, которое создает вибрацию?',
-            second: 'Хотели бы вы получить защиту ваших рук от воздействия вибрации с помощью нашей научной разработки?',
-            third: 'Какая степень защиты вам требуется?',
-            fourth: 'Вам нужны перчатки или рукавицы ?'
+            first: 'Какое количество гостей в туре для Вас является комфортным?',
+            second: 'Какой трансфер Вы предпочитаете?',
+            third: 'Размещение в каком отеле Вы предпочтете?',
+            fourth: 'Где Вы предпочитаете обедать в туре?',
+            fives: 'Что в программе Вас привлекает больше всего?',
+            six: 'Что для Вас важно в сервисе тура?'
         };
     
     // Функция смены заголовка
@@ -121,6 +125,14 @@ function nextBlock() {
                 setPercent();
                 break;
             case 4:
+                titleBlock.textContent = titles.fives;
+                setPercent();
+                break;
+            case 5:
+                titleBlock.textContent = titles.six;
+                setPercent();
+                break;
+            case 6:
                 function hideTitle() {
                     document.querySelector('.content-quiz__progress').classList.add("blockHide");
                     titleBlock.classList.add("blockHide");
@@ -187,6 +199,14 @@ function nextBlock() {
                         break;
                     case 4:
                         hide(".content-quiz__fourth");
+                        show(".content-quiz__fives");
+                        break;
+                    case 5:
+                        hide(".content-quiz__fives");
+                        show(".content-quiz__six");
+                        break;
+                    case 6:
+                        hide(".content-quiz__six");
                         function nShow() {
                         
                             function showNew() {
@@ -253,6 +273,14 @@ function nextBlock() {
                         show(".content-quiz__third");
                         break;
                     case 3:
+                        hide(".content-quiz__fives");
+                        show(".content-quiz__fourth");
+                        break;
+                    case 4:
+                        hide(".content-quiz__six");
+                        show(".content-quiz__fives");
+                        break;
+                    case 5:
                         hide(".content-quiz__fourth");
                         function nShow() {
                         
